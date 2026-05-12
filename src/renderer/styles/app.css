@@ -28,11 +28,53 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1rem;
   padding: 2rem;
   max-width: 800px;
   margin: 0 auto;
   width: 100%;
+}
+
+.status-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 92px;
+  padding: 1.25rem 1.5rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+}
+
+.status-kicker {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: #00a8e8;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.status-panel h2 {
+  font-size: 1.35rem;
+  line-height: 1.2;
+}
+
+.status-light {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: #ffc107;
+  box-shadow: 0 0 18px rgba(255, 193, 7, 0.55);
+}
+
+.status-panel.listening .status-light {
+  background: #00ff88;
+  box-shadow: 0 0 18px rgba(0, 255, 136, 0.65);
 }
 
 .control-panel {
@@ -62,16 +104,25 @@
   border: 1px solid rgba(0, 255, 136, 0.3);
 }
 
+.target-label {
+  margin-bottom: 0.5rem;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .frequency-value {
-  font-size: 2.5rem;
+  font-size: 1.55rem;
   font-weight: bold;
   color: #00ff88;
   font-family: 'Monaco', 'Menlo', monospace;
-  margin-bottom: 0.5rem;
+  margin-top: 0.25rem;
 }
 
 .note-display {
-  font-size: 1.8rem;
+  font-size: 3rem;
   color: #00ff88;
   font-weight: 600;
   letter-spacing: 0.1rem;
@@ -81,6 +132,13 @@
   font-size: 1rem;
   margin-left: 0.5rem;
   opacity: 0.8;
+}
+
+.target-frequency {
+  margin-top: 0.5rem;
+  color: rgba(255, 255, 255, 0.72);
+  font-family: 'Monaco', 'Menlo', monospace;
+  font-size: 0.95rem;
 }
 
 .button-group {
@@ -122,6 +180,50 @@
   box-shadow: 0 8px 16px rgba(255, 71, 87, 0.3);
 }
 
+.error-message {
+  margin-top: 1rem;
+  padding: 0.85rem 1rem;
+  color: #ffd7dc;
+  background: rgba(255, 71, 87, 0.12);
+  border: 1px solid rgba(255, 71, 87, 0.35);
+  border-radius: 6px;
+}
+
+.string-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
+  gap: 0.5rem;
+}
+
+.string-chip {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.76);
+  background: rgba(255, 255, 255, 0.05);
+  font-family: 'Monaco', 'Menlo', monospace;
+  font-weight: 700;
+}
+
+.string-chip.active {
+  color: #0b2117;
+  background: #00ff88;
+  border-color: #00ff88;
+  box-shadow: 0 0 16px rgba(0, 255, 136, 0.32);
+}
+
+.listening-empty {
+  padding: 2rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.76);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px dashed rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+}
+
 .app-footer {
   text-align: center;
   padding: 1.5rem;
@@ -146,10 +248,19 @@
   }
 
   .frequency-value {
-    font-size: 2rem;
+    font-size: 1.25rem;
   }
 
   .note-display {
-    font-size: 1.4rem;
+    font-size: 2.4rem;
+  }
+
+  .status-panel {
+    min-height: 82px;
+    padding: 1rem;
+  }
+
+  .status-panel h2 {
+    font-size: 1.1rem;
   }
 }
