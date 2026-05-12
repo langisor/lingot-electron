@@ -1,0 +1,25 @@
+.spectrum-container {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+}
+
+.spectrum-container h3 {
+  margin-bottom: 1rem;
+  color: #00a8e8;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.spectrum-canvas {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  border: 1px solid rgba(0, 255, 136, 0.2);
+  border-radius: 4px;
+  background: #0a0a0a;
+  display: block;
+  margin: 0 auto;
+}

@@ -1,0 +1,22 @@
+appId: com.nongnu.lingot
+productName: Lingot Tuner
+directories:
+  buildResources: assets
+files:
+  - dist
+  - node_modules
+  - package.json
+win:
+  target:
+    - nsis
+    - portable
+mac:
+  target:
+    - dmg
+    - zip
+  category: public.app-category.music
+linux:
+  target:
+    - AppImage
+    - deb
+  category: AudioVideo

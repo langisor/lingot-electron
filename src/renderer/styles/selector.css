@@ -1,0 +1,54 @@
+.tuning-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.tuning-selector label {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #ffffff;
+}
+
+.tuning-selector select {
+  padding: 0.75rem;
+  background: rgba(0, 168, 232, 0.1);
+  border: 2px solid rgba(0, 168, 232, 0.5);
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tuning-selector select:hover,
+.tuning-selector select:focus {
+  background: rgba(0, 168, 232, 0.2);
+  border-color: rgba(0, 168, 232, 0.8);
+  outline: none;
+}
+
+.tuning-selector option {
+  background: #2d2d3d;
+  color: #ffffff;
+}
+
+.tuning-info {
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  border-left: 3px solid rgba(0, 168, 232, 0.5);
+}
+
+.tuning-notes {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: 'Monaco', 'Menlo', monospace;
+  letter-spacing: 0.05em;
+}
+
+.tuning-notes strong {
+  color: #00a8e8;
+  display: block;
+  margin-bottom: 0.5rem;
+}
