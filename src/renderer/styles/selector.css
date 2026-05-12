@@ -1,54 +1,47 @@
 .tuning-selector {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 6px 8px;
+  align-items: center;
 }
 
 .tuning-selector label {
-  font-weight: 600;
-  font-size: 1rem;
-  color: #ffffff;
+  color: #9ca39f;
+  font-size: 13px;
 }
 
 .tuning-selector select {
-  padding: 0.75rem;
-  background: rgba(0, 168, 232, 0.1);
-  border: 2px solid rgba(0, 168, 232, 0.5);
-  border-radius: 6px;
-  color: #ffffff;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  min-width: 0;
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid #151a1a;
+  color: #d5dbd6;
+  background: #252c2c;
+  font-size: 13px;
 }
 
-.tuning-selector select:hover,
 .tuning-selector select:focus {
-  background: rgba(0, 168, 232, 0.2);
-  border-color: rgba(0, 168, 232, 0.8);
-  outline: none;
+  outline: 1px solid #7cff56;
+  outline-offset: 1px;
 }
 
 .tuning-selector option {
-  background: #2d2d3d;
-  color: #ffffff;
+  background: #252c2c;
+  color: #d5dbd6;
 }
 
 .tuning-info {
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 6px;
-  border-left: 3px solid rgba(0, 168, 232, 0.5);
+  grid-column: 1 / -1;
 }
 
 .tuning-notes {
-  font-size: 0.95rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: #8f9894;
   font-family: 'Monaco', 'Menlo', monospace;
-  letter-spacing: 0.05em;
+  font-size: 12px;
 }
 
 .tuning-notes strong {
-  color: #00a8e8;
-  display: block;
-  margin-bottom: 0.5rem;
+  color: #adb4b0;
+  font-family: inherit;
+  font-weight: 700;
 }

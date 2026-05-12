@@ -1,94 +1,183 @@
 .gauge-container {
+  height: 116px;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
   align-items: center;
 }
 
 .gauge {
   width: 100%;
-  height: 100px;
-  background: linear-gradient(180deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 255, 136, 0.05) 100%);
-  border: 2px solid rgba(0, 255, 136, 0.3);
-  border-radius: 8px;
+  max-width: 370px;
+  height: 116px;
   position: relative;
   overflow: hidden;
+  background: #f4f1e8;
+  border: 1px solid #171b1c;
 }
 
-.gauge.out-of-tune {
-  border-color: rgba(255, 193, 7, 0.5);
-  background: linear-gradient(180deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 193, 7, 0.05) 100%);
-}
-
-.gauge-scale {
+.gauge::before {
+  content: '';
   position: absolute;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: flex-end;
-  padding: 0 1rem;
+  left: 10%;
+  right: 10%;
+  bottom: -78px;
+  height: 168px;
+  border-radius: 50% 50% 0 0;
+  border-top: 5px solid #343b68;
+  border-left: 5px solid #343b68;
+  border-right: 5px solid #343b68;
+}
+
+.gauge::after {
+  content: '';
+  position: absolute;
+  left: 24%;
+  right: 24%;
+  bottom: -58px;
+  height: 126px;
+  border-radius: 50% 50% 0 0;
+  border-top: 10px solid #e1a9a6;
+  border-left: 10px solid #e1a9a6;
+  border-right: 10px solid #e1a9a6;
+}
+
+.gauge-arc {
+  position: absolute;
+  left: 13%;
+  right: 13%;
+  bottom: -67px;
+  height: 148px;
+  border-radius: 50% 50% 0 0;
+  pointer-events: none;
+}
+
+.gauge-arc-outer {
+  border-top: 2px solid #99a260;
+  border-left: 2px solid #99a260;
+  border-right: 2px solid #99a260;
+}
+
+.gauge-arc-inner {
+  left: 18%;
+  right: 18%;
+  bottom: -60px;
+  height: 134px;
+  border-top: 2px solid #3d426e;
+}
+
+.gauge-arc-ok {
+  left: calc(50% - 17px);
+  right: auto;
+  bottom: 48px;
+  width: 34px;
+  height: 24px;
+  border-radius: 3px 3px 0 0;
+  background: #87d28f;
+}
+
+.gauge-marks {
+  position: absolute;
+  left: 50%;
+  bottom: 7px;
+  width: 1px;
+  height: 98px;
 }
 
 .gauge-mark {
   position: absolute;
-  width: 2px;
-  height: 30px;
-  background: rgba(255, 255, 255, 0.3);
+  left: 0;
   bottom: 0;
-  transform: translateX(-1px);
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 0.75rem;
-  padding-bottom: 35px;
+  width: 1px;
+  height: 92px;
+  transform-origin: bottom center;
 }
 
-.gauge-mark.center {
-  height: 40px;
-  background: rgba(0, 255, 136, 0.6);
-  width: 3px;
+.gauge-mark::before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: -1px;
+  width: 2px;
+  height: 9px;
+  background: #333a68;
+}
+
+.gauge-mark.center::before {
+  top: 0;
+  height: 16px;
+  width: 4px;
+  left: -2px;
+  background: #44484c;
+}
+
+.gauge-mark span {
+  position: absolute;
+  top: 14px;
+  left: -15px;
+  width: 30px;
+  color: #333a68;
+  font-size: 11px;
+  font-family: Georgia, 'Times New Roman', serif;
+  text-align: center;
+}
+
+.gauge-center-label {
+  position: absolute;
+  left: 50%;
+  top: 34px;
+  width: 40px;
+  transform: translateX(-50%);
+  color: #333a68;
+  font-size: 12px;
+  text-align: center;
+}
+
+.gauge-center-label::before {
+  content: '0';
+  display: block;
+  color: #343b68;
+  line-height: 1;
 }
 
 .gauge-needle {
   position: absolute;
-  width: 4px;
-  height: 100%;
-  background: linear-gradient(to right, transparent, #00ff88, transparent);
-  top: 0;
-  transform: translateX(-2px);
-  box-shadow: 0 0 10px rgba(0, 255, 136, 0.8);
-  transition: left 0.1s ease-out;
+  left: 50%;
+  bottom: 8px;
+  width: 2px;
+  height: 92px;
+  background: #c1292e;
+  transform-origin: bottom center;
+  box-shadow: 1px 0 0 #ffffff;
+  transition: transform 100ms ease-out;
+  z-index: 4;
 }
 
-.gauge-label {
+.gauge-pivot {
   position: absolute;
-  bottom: 5px;
-  right: 10px;
-  font-size: 0.75rem;
-  opacity: 0.5;
-  color: rgba(255, 255, 255, 0.6);
+  left: 50%;
+  bottom: 1px;
+  width: 13px;
+  height: 13px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: #aa2930;
+  border: 1px solid #7b151a;
+  z-index: 5;
+}
+
+.gauge-zero {
+  position: absolute;
+  left: 50%;
+  top: 27px;
+  transform: translateX(-50%);
+  color: #343b68;
+  font-size: 11px;
+  font-family: Georgia, 'Times New Roman', serif;
 }
 
 .status-indicator {
-  display: flex;
-  justify-content: center;
-  font-size: 1.2rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-}
-
-.in-tune-badge {
-  color: #00ff88;
-  text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
-}
-
-.almost-badge {
-  color: #ffc107;
-  text-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
-}
-
-.out-badge {
-  color: #ff4757;
-  text-shadow: 0 0 10px rgba(255, 71, 87, 0.5);
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
 }

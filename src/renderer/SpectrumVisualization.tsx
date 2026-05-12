@@ -17,62 +17,102 @@ const SpectrumVisualization: React.FC<SpectrumVisualizationProps> = ({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Draw simple frequency spectrum
     const width = canvas.width;
     const height = canvas.height;
+    const plotLeft = 34;
+    const plotRight = 12;
+    const plotTop = 16;
+    const plotBottom = 20;
+    const plotWidth = width - plotLeft - plotRight;
+    const plotHeight = height - plotTop - plotBottom;
+    const maxFreq = 1000;
 
-    ctx.fillStyle = '#0a0a0a';
+    ctx.fillStyle = '#0b2d1e';
     ctx.fillRect(0, 0, width, height);
 
-    // Draw frequency line
-    if (frequency !== null) {
-      const maxFreq = 5000;
-      const x = (frequency / maxFreq) * width;
-
-      // Gradient background
-      const gradient = ctx.createLinearGradient(0, 0, 0, height);
-      gradient.addColorStop(0, 'rgba(0, 255, 136, 0.2)');
-      gradient.addColorStop(1, 'rgba(0, 255, 136, 0.05)');
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, x, height);
-
-      // Frequency line
-      ctx.strokeStyle = '#00ff88';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, height);
-      ctx.stroke();
-
-      // Frequency label
-      ctx.fillStyle = '#00ff88';
-      ctx.font = 'bold 14px monospace';
-      ctx.fillText(`${frequency.toFixed(0)} Hz`, x + 10, 30);
-    }
-
-    // Draw grid
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+    ctx.strokeStyle = 'rgba(190, 228, 174, 0.48)';
     ctx.lineWidth = 1;
-    for (let i = 0; i <= 5; i++) {
-      const x = (i / 5) * width;
+    [0, 250, 500, 750, 1000].forEach((tick) => {
+      const x = plotLeft + (tick / maxFreq) * plotWidth;
       ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, height);
+      ctx.moveTo(x, plotTop);
+      ctx.lineTo(x, plotTop + plotHeight);
       ctx.stroke();
+    });
 
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-      ctx.font = '12px monospace';
-      ctx.fillText(`${Math.round((i / 5) * 5000)} Hz`, x + 5, 15);
+    [0, 20, 40].forEach((db) => {
+      const y = plotTop + plotHeight - (db / 50) * plotHeight;
+      ctx.beginPath();
+      ctx.moveTo(plotLeft, y);
+      ctx.lineTo(plotLeft + plotWidth, y);
+      ctx.stroke();
+    });
+
+    ctx.fillStyle = '#b8d9ad';
+    ctx.font = '13px sans-serif';
+    ctx.fillText('dB', 9, 14);
+    [0, 20, 40].forEach((db) => {
+      const y = plotTop + plotHeight - (db / 50) * plotHeight + 4;
+      ctx.fillText(String(db), 8, y);
+    });
+
+    ctx.fillText('0 Hz', plotLeft - 6, height - 4);
+    ctx.fillText('200 Hz', plotLeft + plotWidth * 0.2 - 18, height - 4);
+    ctx.fillText('400 Hz', plotLeft + plotWidth * 0.4 - 18, height - 4);
+    ctx.fillText('600 Hz', plotLeft + plotWidth * 0.6 - 18, height - 4);
+    ctx.fillText('800 Hz', plotLeft + plotWidth * 0.8 - 18, height - 4);
+    ctx.fillText('1 kHz', plotLeft + plotWidth - 36, height - 4);
+
+    ctx.strokeStyle = '#d8f25a';
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(plotLeft, plotTop + plotHeight * 0.42);
+    ctx.lineTo(plotLeft + plotWidth, plotTop + plotHeight * 0.42);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    const baseFrequency = Math.max(42, Math.min(maxFreq, frequency ?? 98.82));
+    const peaks = Array.from({ length: 54 }, (_, index) => {
+      const harmonic = (index % 7) + 1;
+      const spread = (index * 37) % 1000;
+      const freq = index < 10 ? baseFrequency * harmonic : spread;
+      const wrappedFreq = Math.max(8, Math.min(maxFreq, freq % maxFreq));
+      const harmonicBoost = index < 10 ? 1 / Math.sqrt(harmonic) : 0.18 + ((index * 13) % 18) / 100;
+      const jitter = 0.45 + ((index * 17) % 45) / 100;
+      const level = Math.min(1, harmonicBoost * jitter);
+
+      return { freq: wrappedFreq, level };
+    });
+
+    peaks.forEach(({ freq, level }, index) => {
+      const x = plotLeft + (freq / maxFreq) * plotWidth;
+      const barHeight = Math.max(3, level * plotHeight * 0.84);
+      const y = plotTop + plotHeight - barHeight;
+
+      ctx.fillStyle = index < 10 ? '#28ff00' : '#14d94d';
+      ctx.fillRect(Math.round(x), Math.round(y), 3, Math.round(barHeight));
+    });
+
+    if (frequency !== null) {
+      const x = plotLeft + (Math.min(frequency, maxFreq) / maxFreq) * plotWidth;
+
+      ctx.strokeStyle = '#ff4a2f';
+      ctx.setLineDash([2, 3]);
+      ctx.beginPath();
+      ctx.moveTo(x, plotTop);
+      ctx.lineTo(x, plotTop + plotHeight);
+      ctx.stroke();
+      ctx.setLineDash([]);
     }
   }, [frequency]);
 
   return (
     <section className="spectrum-container">
-      <h3>Frequency Spectrum</h3>
+      <div className="panel-title">Spectrum</div>
       <canvas
         ref={canvasRef}
-        width={600}
-        height={150}
+        width={700}
+        height={176}
         className="spectrum-canvas"
       />
     </section>

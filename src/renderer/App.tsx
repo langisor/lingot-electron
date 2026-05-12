@@ -74,7 +74,14 @@ const App: React.FC = () => {
   const target = frequency !== null ? getClosestTuningTarget(frequency, selectedTuning) : null;
   const cents = target?.cents ?? note?.cents ?? 0;
   const isInTune = Math.abs(cents) < 5;
-  const tuningDirection = cents > 0 ? 'Tune down' : cents < 0 ? 'Tune up' : 'Hold steady';
+  const detectedNote = note ? `${note.note}${note.octave}` : '-';
+  const idleTargetLabel = TUNINGS[selectedTuning]?.notes[0] ?? '-';
+  const idleTarget = parseNoteLabel(idleTargetLabel);
+  const idleFrequency = idleTarget ? noteToFrequency(idleTarget.note, idleTarget.octave) : null;
+  const displayFrequency = frequency ?? target?.frequency ?? idleFrequency;
+  const toneLabel = target?.label ?? (frequency !== null ? detectedNote : idleTargetLabel);
+  const toneNote = toneLabel.slice(0, -1) || '-';
+  const toneOctave = toneLabel.length > 1 ? toneLabel.slice(-1) : '';
 
   useEffect(() => {
     const detector = new FrequencyDetector();
@@ -128,94 +135,96 @@ const App: React.FC = () => {
 
   return (
     <div className="app">
-      <header className="app-header">
-        <h1>🎸 Lingot Tuner</h1>
-        <p>Accurate Musical Instrument Tuner</p>
-      </header>
+      <div className="window-shell">
+        <header className="app-titlebar">
+          <div className="window-dot" aria-hidden="true" />
+          <div className="window-title">lingot</div>
+          <button className="window-close" type="button" aria-label="Close preview">
+            x
+          </button>
+        </header>
 
-      <main className="app-main">
-        <section className={`status-panel ${isListening ? 'listening' : ''}`}>
-          <div>
-            <span className="status-kicker">{isListening ? 'Listening' : 'Ready'}</span>
-            <h2>{isListening ? 'Play one string at a time' : 'Choose a tuning and start'}</h2>
-          </div>
-          <div className="status-light" aria-hidden="true" />
-        </section>
+        <nav className="app-menu" aria-label="Application menu">
+          <button type="button">File</button>
+          <button type="button">Edit</button>
+          <button type="button">View</button>
+          <button type="button">Help</button>
+        </nav>
 
-        <section className="control-panel">
-          <TuningSelector
-            selectedTuning={selectedTuning}
-            onChange={setSelectedTuning}
-          />
-
-          <div className="button-group">
-            {!isListening ? (
-              <button
-                className="btn btn-primary"
-                onClick={startListening}
-              >
-                Start Tuning
-              </button>
-            ) : (
-              <button
-                className="btn btn-danger"
-                onClick={stopListening}
-              >
-                Stop Listening
-              </button>
-            )}
-          </div>
-
-          {errorMessage && <div className="error-message">{errorMessage}</div>}
-        </section>
-
-        {isListening && frequency !== null && note !== null && target !== null && (
-          <>
-            <section className="display-panel">
-              <div className="frequency-display">
-                <div className="target-label">Closest string: {target.label}</div>
-                <div className="note-display">
-                  {note.note}{note.octave}
-                  {cents > 0 && <span className="cents">+{cents}</span>}
-                  {cents < 0 && <span className="cents">{cents}</span>}
-                </div>
-                <div className="frequency-value">{frequency.toFixed(1)} Hz</div>
-                <div className="target-frequency">
-                  Target {target.frequency.toFixed(1)} Hz | {tuningDirection}
-                </div>
-              </div>
-
+        <main className="app-main">
+          <section className="meter-row">
+            <div className="classic-panel deviation-panel">
+              <div className="panel-title">Deviation</div>
               <TuningGauge
                 cents={cents}
                 isInTune={isInTune}
               />
+            </div>
 
-              <div className="string-strip" aria-label="Tuning targets">
-                {TUNINGS[selectedTuning].notes.map((stringNote) => (
-                  <div
-                    key={stringNote}
-                    className={`string-chip ${stringNote === target.label ? 'active' : ''}`}
-                  >
-                    {stringNote}
-                  </div>
-                ))}
+            <div className="classic-panel tone-panel">
+              <div className="panel-title">Tone</div>
+              <div className="tone-frequency">
+                f = {displayFrequency !== null ? displayFrequency.toFixed(2) : '--'} Hz
               </div>
-            </section>
-
-            <SpectrumVisualization frequency={frequency} />
-          </>
-        )}
-
-        {isListening && frequency === null && (
-          <section className="listening-empty">
-            Waiting for a clear pitch...
+              <div className="tone-note">
+                {toneNote}
+                <sub>{toneOctave}</sub>
+              </div>
+              <div className="tone-cents">
+                {detectedNote.toLowerCase()} = {cents > 0 ? '+' : ''}{cents} cents
+              </div>
+            </div>
           </section>
-        )}
-      </main>
 
-      <footer className="app-footer">
-        <p>LINGOT - Free and accurate musical instrument tuner</p>
-      </footer>
+          <SpectrumVisualization frequency={frequency} />
+
+          <section className="control-panel">
+            <TuningSelector
+              selectedTuning={selectedTuning}
+              onChange={setSelectedTuning}
+            />
+
+            <div className="button-group">
+              {!isListening ? (
+                <button
+                  className="btn btn-primary"
+                  onClick={startListening}
+                >
+                  Start
+                </button>
+              ) : (
+                <button
+                  className="btn btn-danger"
+                  onClick={stopListening}
+                >
+                  Stop
+                </button>
+              )}
+            </div>
+
+            <div className="string-strip" aria-label="Tuning targets">
+              {TUNINGS[selectedTuning].notes.map((stringNote) => (
+                <div
+                  key={stringNote}
+                  className={`string-chip ${stringNote === target?.label ? 'active' : ''}`}
+                >
+                  {stringNote}
+                </div>
+              ))}
+            </div>
+
+            <div className={`listen-status ${isListening ? 'listening' : ''}`}>
+              {isListening
+                ? frequency === null
+                  ? 'Waiting for a clear pitch'
+                  : `Tracking ${detectedNote}`
+                : 'Microphone idle'}
+            </div>
+
+            {errorMessage && <div className="error-message">{errorMessage}</div>}
+          </section>
+        </main>
+      </div>
     </div>
   );
 };

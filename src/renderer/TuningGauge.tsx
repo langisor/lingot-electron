@@ -8,38 +8,50 @@ interface TuningGaugeProps {
 
 const TuningGauge: React.FC<TuningGaugeProps> = ({ cents, isInTune }) => {
   const normalizedCents = Math.max(-50, Math.min(50, cents));
-  const percentage = ((normalizedCents + 50) / 100) * 100;
+  const needleAngle = (normalizedCents / 50) * 62;
 
   return (
     <div className="gauge-container">
       <div className={`gauge ${isInTune ? 'in-tune' : 'out-of-tune'}`}>
-        <div className="gauge-scale">
-          {[-50, -25, 0, 25, 50].map((mark) => (
-            <div
-              key={mark}
-              className={`gauge-mark ${mark === 0 ? 'center' : ''}`}
-              style={{ left: `${((mark + 50) / 100) * 100}%` }}
-            >
-              {mark}
-            </div>
-          ))}
+        <div className="gauge-arc gauge-arc-outer" />
+        <div className="gauge-arc gauge-arc-inner" />
+        <div className="gauge-arc gauge-arc-ok" />
+
+        <div className="gauge-marks">
+          {[-50, -25, 0, 25, 50].map((mark) => {
+            const angle = (mark / 50) * 62;
+
+            return (
+              <div
+                key={mark}
+                className={`gauge-mark ${mark === 0 ? 'center' : ''}`}
+                style={{ transform: `rotate(${angle}deg)` }}
+              >
+                <span>{mark > 0 ? `+${mark}` : mark}</span>
+              </div>
+            );
+          })}
         </div>
 
+        <div className="gauge-center-label">
+          <span>cent</span>
+        </div>
         <div
           className="gauge-needle"
-          style={{ left: `${percentage}%` }}
+          style={{ transform: `translateX(-50%) rotate(${needleAngle}deg)` }}
         />
+        <div className="gauge-pivot" />
 
-        <div className="gauge-label">Cents</div>
+        <div className="gauge-zero">0</div>
       </div>
 
       <div className="status-indicator">
         {isInTune ? (
-          <span className="in-tune-badge">✓ IN TUNE</span>
+          <span className="in-tune-badge">in tune</span>
         ) : Math.abs(cents) < 20 ? (
-          <span className="almost-badge">⚠ CLOSE</span>
+          <span className="almost-badge">close</span>
         ) : (
-          <span className="out-badge">✗ OUT OF TUNE</span>
+          <span className="out-badge">out of tune</span>
         )}
       </div>
     </div>
