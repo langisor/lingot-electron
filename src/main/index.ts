@@ -1,12 +1,12 @@
-import { app, BrowserWindow, ipcMain, Menu } from 'electron';
-import { join } from 'path';
+import { app, BrowserWindow, ipcMain, Menu, type MenuItemConstructorOptions } from 'electron';
+import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
-const __dirname = join(fileURLToPath(import.meta.url), '..');
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 let mainWindow: BrowserWindow | null = null;
 
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = !app.isPackaged;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -21,7 +21,7 @@ function createWindow() {
   });
 
   const startUrl = isDev
-    ? 'http://localhost:5173'
+    ? process.env.VITE_DEV_SERVER_URL ?? 'http://localhost:5173'
     : `file://${join(__dirname, '../renderer/index.html')}`;
 
   mainWindow.loadURL(startUrl);
@@ -57,7 +57,7 @@ ipcMain.handle('get-frequency', async () => {
 });
 
 // Create application menu
-const template: any[] = [
+const template: MenuItemConstructorOptions[] = [
   {
     label: 'File',
     submenu: [

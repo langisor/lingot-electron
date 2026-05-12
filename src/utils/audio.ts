@@ -5,15 +5,28 @@
 
 const SAMPLE_RATE = 44100;
 
+type WindowWithWebKitAudio = Window &
+  typeof globalThis & {
+    webkitAudioContext?: typeof AudioContext;
+  };
+
 export class FrequencyDetector {
   private audioContext: AudioContext | null = null;
   private analyser: AnalyserNode | null = null;
-  private dataArray: Uint8Array | null = null;
+  private dataArray: Uint8Array<ArrayBuffer> | null = null;
+  private stream: MediaStream | null = null;
   private fftSize = 4096;
 
   async initialize(): Promise<boolean> {
     try {
-      this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const AudioContextConstructor =
+        window.AudioContext ?? (window as WindowWithWebKitAudio).webkitAudioContext;
+
+      if (!AudioContextConstructor || !navigator.mediaDevices?.getUserMedia) {
+        return false;
+      }
+
+      this.audioContext = new AudioContextConstructor();
       this.analyser = this.audioContext.createAnalyser();
       this.analyser.fftSize = this.fftSize;
       this.analyser.smoothingTimeConstant = 0.8;
@@ -21,13 +34,13 @@ export class FrequencyDetector {
       const dataArrayLength = this.analyser.frequencyBinCount;
       this.dataArray = new Uint8Array(dataArrayLength);
 
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const source = this.audioContext.createMediaStreamSource(stream);
+      this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const source = this.audioContext.createMediaStreamSource(this.stream);
       source.connect(this.analyser);
 
       return true;
-    } catch (error) {
-      console.error('Failed to initialize audio:', error);
+    } catch {
+      this.stop();
       return false;
     }
   }
@@ -38,7 +51,7 @@ export class FrequencyDetector {
   detectFrequency(): number | null {
     if (!this.analyser || !this.dataArray) return null;
 
-    this.analyser.getByteFrequencyData(this.dataArray as any);
+    this.analyser.getByteFrequencyData(this.dataArray);
 
     let maxValue = 0;
     let maxIndex = 0;
@@ -65,10 +78,20 @@ export class FrequencyDetector {
   }
 
   stop(): void {
+    if (this.stream) {
+      this.stream.getTracks().forEach((track) => track.stop());
+      this.stream = null;
+    }
+
     if (this.audioContext) {
-      this.audioContext.close();
+      if (this.audioContext.state !== 'closed') {
+        void this.audioContext.close().catch(() => undefined);
+      }
       this.audioContext = null;
     }
+
+    this.analyser = null;
+    this.dataArray = null;
   }
 }
 
