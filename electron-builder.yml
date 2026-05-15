@@ -22,6 +22,13 @@ mac:
     - dmg
     - zip
   category: public.app-category.music
+  hardenedRuntime: true
+  entitlements: signing/entitlements.mac.plist
+  entitlementsInherit: signing/entitlements.mac.inherit.plist
+  gatekeeperAssess: false
+  notarize: true
+  extendInfo:
+    NSMicrophoneUsageDescription: Lingot Tuner uses your microphone to detect instrument pitch.
 linux:
   target:
     - AppImage

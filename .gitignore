@@ -7,3 +7,8 @@ out/
 build/
 .env
 .env.local
+electron-builder.env
+*.p12
+*.pfx
+*.cer
+*.cert
