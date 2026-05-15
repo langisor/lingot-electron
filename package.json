@@ -2,8 +2,16 @@
   "name": "lingot-electron",
   "version": "1.0.0",
   "description": "A web-based musical instrument tuner (Electron app)",
+  "author": {
+    "name": "langisor",
+    "email": "langisor-app@proton.me"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/langisor/lingot-electron.git"
+  },
   "main": "dist/main/index.js",
-  "homepage": "./",
+  "homepage": "https://github.com/langisor/lingot-electron",
   "type": "module",
   "scripts": {
     "dev": "concurrently \"npm run dev:react\" \"npm run dev:electron\"",
@@ -13,6 +21,8 @@
     "build:react": "vite build",
     "build:electron": "tsc",
     "package": "npm run build && electron-builder",
+    "package:publish": "npm run build && electron-builder --publish onTagOrDraft",
+    "package:local": "npm run build && electron-builder --publish never",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {

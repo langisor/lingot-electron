@@ -1,11 +1,18 @@
-appId: com.nongnu.lingot
+appId: com.langisor.lingot
 productName: Lingot Tuner
+copyright: Copyright © 2026 langisor
 directories:
   buildResources: assets
+  output: release
 files:
   - dist
   - node_modules
   - package.json
+publish:
+  provider: github
+  owner: langisor
+  repo: lingot-electron
+  releaseType: draft
 win:
   target:
     - nsis
