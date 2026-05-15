@@ -1,0 +1,9 @@
+dist/main
+src/main
+src/preload
+electron-builder.yml
+electron-builder.env.example
+SIGNING.md
+signing/
+release/
+.github/
